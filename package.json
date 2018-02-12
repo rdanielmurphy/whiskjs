@@ -1,0 +1,17 @@
+{
+  "name": "js-framework",
+  "version": "1.0.0",
+  "description": "next new js framework",
+  "main": "compiler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Daniel Murphy",
+  "license": "MIT",
+  "dependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "jsdom": "^11.6.2",
+    "xml2js": "^0.4.19"
+  }
+}

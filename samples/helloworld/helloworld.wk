@@ -1,0 +1,23 @@
+<component>
+	<name>HelloWorld</name>
+	<template>
+		<div class="box">
+			<p wk-id="text" wk-value="Hello ${inputValue}"></p>
+			<button wk-click="click" wk-value="Click me ${inputValue}!"></button>
+			<input wk-model="inputValue"></input>
+		</div>
+	</template>
+	<script>
+		var scope = this;
+
+		this.onPostCreate = function() {
+			this.setState({
+				inputValue : "World"
+			})
+		}
+
+		this.click = function(e) {
+			scope.text.style.color = "#"+((1<<24)*Math.random()|0).toString(16);
+		}
+	</script>
+</component>
