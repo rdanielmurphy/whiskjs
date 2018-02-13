@@ -6,9 +6,7 @@
   "dependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
-    "jsdom": "^11.6.2",
-    "webpack": "^3.10.0",
-    "xml2js": "^0.4.19"
+    "webpack": "^3.10.0"
   },
   "devDependencies": {
     "css-loader": "^0.28.9",

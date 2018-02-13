@@ -2,7 +2,7 @@ const Util = Object.assign({}, {
     searchForStateVars : function(val) {
         var results = [];
         
-        var regEx = new RegExp('(\\$\\{\\w*\\\})', 'g');
+        var regEx = new RegExp('(\\$\\{[\\w\\(\\)]*\\})', 'g');
         var response = regEx.exec(val);
         while(response) {
             results.push(response[0]);
@@ -11,16 +11,26 @@ const Util = Object.assign({}, {
         
         return results;
     },
-    replaceAllStateVars : function(string, vars) {
-        var newString = string;
+    mergeObjects : function(obj1,obj2){
+        var obj3 = {};
+        for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
+        for (var attrname in obj2) { obj3[attrname] = obj2[attrname]; }
+        return obj3;
+    },
+    replaceAllStateVars : function(string, scope) {
+        var vars = this.mergeObjects(scope, scope.state);
+
+        var newString = "'" + string + "'";
     
         var results = this.searchForStateVars(string);
         
         for (let value of results) {
             var key = value.substring(2, value.length - 1);
-            var newValue = vars[key];
-            newString = newString.split(value).join(newValue);
+            newString = newString.split(value).join("' + this." + key + " + '");
         }
+
+        var func = new Function("return " + newString + ";");
+        newString = func.apply(vars);
         
         return newString;
     }

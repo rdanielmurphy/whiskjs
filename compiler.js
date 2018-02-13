@@ -27,5 +27,4 @@ function codeGenerationLoader(input) {
   return script;
 }
 
-module.exports = codeGenerationLoader;
 module.exports.default = codeGenerationLoader;

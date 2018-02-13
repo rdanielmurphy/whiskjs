@@ -2,7 +2,7 @@
 	<name>HelloWorld</name>
 	<template>
 		<div class="box">
-			<p wk-id="text" wk-value="Hello ${inputValue}"></p>
+			<p wk-id="text" wk-value="Hello ${inputValue}. ${isNiceName()}"></p>
 			<button wk-click="click" wk-value="Click me ${inputValue}!"></button>
 			<input wk-model="inputValue"></input>
 		</div>
@@ -13,7 +13,12 @@
 		this.onPostCreate = function() {
 			this.setState({
 				inputValue : "World"
-			})
+			});
+		}
+
+		this.isNiceName = function() {
+			var val = this.getState().inputValue;
+			return (val && (val.toLowerCase() === 'whisk')) ? "Nice Name." : "";
 		}
 
 		this.click = function(e) {

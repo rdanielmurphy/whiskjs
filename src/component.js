@@ -56,7 +56,11 @@ Component.prototype.placeAt = function(placeAt) {
 }
 
 Component.prototype._getChildren = function() {
-    return this.rootNode.getElementsByTagName('*');
+    if (this.rootNode) {
+        return this.rootNode.getElementsByTagName('*');
+    }
+
+    return [];
 }
 
 Component.prototype._processAttrs = function(el) {
@@ -79,13 +83,18 @@ Component.prototype._processAttrs = function(el) {
             state[model] = this.value;
             scope.setState(state);
         });
+        el.addEventListener("keyup", function(e) {
+            var state = {};
+            state[model] = this.value;
+            scope.setState(state);
+        });
     }
 }
 
 Component.prototype._setTagState = function(el) {
     var wkValue = el.getAttribute("wk-value");
     if (wkValue) {
-        var stringVal = Util.replaceAllStateVars(wkValue, this.state);
+        var stringVal = Util.replaceAllStateVars(wkValue, this);
 
         // set values
         if (el.tagName === 'P' || el.tagName === 'BUTTON') {
