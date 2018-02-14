@@ -2,4 +2,6 @@ node_modules
 dist
 samples/helloworld/dist
 samples/helloworld/node_modules
+samples/demo/dist
+samples/demo/node_modules
 .vscode

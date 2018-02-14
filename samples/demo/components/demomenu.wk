@@ -1,0 +1,10 @@
+<component>
+	<name>DemoMenu</name>
+	<template>
+		<div>
+			<p>Hello Menu!</p>
+		</div>
+	</template>
+	<script>
+	</script>
+</component>

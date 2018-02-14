@@ -2,6 +2,7 @@
 
 import Stateable from "./stateable";
 import Util from "./utils";
+import Mount from "./mount";
 
 function Component(params) {
     // Apply params
@@ -27,7 +28,7 @@ Component.prototype.render = function() {
     var children = this._getChildren();
     for (var i = 0; i < children.length; i++) {
       var child = children[i];
-      this._processAttrs(child);
+      this._processChild(child);
     }
 
     if (this.onRender) {
@@ -63,6 +64,11 @@ Component.prototype._getChildren = function() {
     return [];
 }
 
+Component.prototype._processChild = function(el) {
+    this._processAttrs(el);
+    this._processTag(el);
+}
+
 Component.prototype._processAttrs = function(el) {
     var scope = this;
 
@@ -88,6 +94,21 @@ Component.prototype._processAttrs = function(el) {
             state[model] = this.value;
             scope.setState(state);
         });
+    }
+}
+
+Component.prototype._processTag = function(el) {
+    var tagName = el.tagName;
+
+    if (this[tagName]) {
+        // Custom tag
+        console.log(tagName);
+    } else {
+        // TODO the rest
+        // TODO we can do stuff with lists
+        if (tagName === 'ul') {
+            console.log("ul");
+        }
     }
 }
 

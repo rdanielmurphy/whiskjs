@@ -1,8 +1,13 @@
 "use strict";
 
-function mount(component, divid) {
-    this.component = component;
-    this.divid = divid;
-}
+function mount (component, placeAt) {
+    // Build component
+    component.preRender();
+    component.render();
+    component.postCreate();
 
-module.exports = mount;
+    // Add to DOM
+    component.placeAt(placeAt);
+};
+
+export default mount;
