@@ -2,7 +2,7 @@
 
 import Stateable from "./stateable";
 import Util from "./utils";
-import Mount from "./mount";
+import Registry from "./registry";
 
 function Component(params) {
     // Apply params
@@ -28,7 +28,11 @@ Component.prototype.render = function() {
     var children = this._getChildren();
     for (var i = 0; i < children.length; i++) {
       var child = children[i];
-      this._processChild(child);
+      this._processAttrs(child);
+    }
+    for (var i = 0; i < children.length; i++) {
+      var child = children[i];
+      this._processTag(child);
     }
 
     if (this.onRender) {
@@ -49,24 +53,12 @@ Component.prototype.placeAt = function(placeAt) {
     placeAt.appendChild(this.rootNode);
 }
 
-Component.prototype.placeAt = function(placeAt) {
-    if (typeof placeAt === 'string' || placeAt instanceof String) {
-        var placeAt = document.getElementById(placeAt);
-    }
-    placeAt.appendChild(this.rootNode);
-}
-
 Component.prototype._getChildren = function() {
     if (this.rootNode) {
         return this.rootNode.getElementsByTagName('*');
     }
 
     return [];
-}
-
-Component.prototype._processChild = function(el) {
-    this._processAttrs(el);
-    this._processTag(el);
 }
 
 Component.prototype._processAttrs = function(el) {
@@ -100,9 +92,9 @@ Component.prototype._processAttrs = function(el) {
 Component.prototype._processTag = function(el) {
     var tagName = el.tagName;
 
-    if (this[tagName]) {
-        // Custom tag
-        console.log(tagName);
+    if (Registry.getComponent(tagName)) {
+        var tagClass = Registry.getComponent(tagName);
+        whisk.mount(new tagClass(), el);
     } else {
         // TODO the rest
         // TODO we can do stuff with lists
@@ -113,6 +105,8 @@ Component.prototype._processTag = function(el) {
 }
 
 Component.prototype._setTagState = function(el) {
+    // TODO: Don't set state for child component tags
+    
     var wkValue = el.getAttribute("wk-value");
     if (wkValue) {
         var stringVal = Util.replaceAllStateVars(wkValue, this);

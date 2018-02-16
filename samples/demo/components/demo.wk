@@ -3,7 +3,6 @@
 	<template>
 		<div>
 			<DemoMenu wk-id="demoMenu"/>
-			<p>Something</p>
 		</div>
 	</template>
 	<imports>

@@ -11,5 +11,8 @@ Features so far:
 Features to add:
   - Routing
   - Embedded components
+  - List logic
+  - Class logic
+  - If logic
   
   etc...
