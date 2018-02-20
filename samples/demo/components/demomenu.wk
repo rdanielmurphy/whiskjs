@@ -4,10 +4,11 @@
 		<div>
 			<div wk-id="mySidenav" class="sidenav">
 				<a href="javascript:void(0)" class="closebtn" wk-click="closeMenu">&times;</a>
-				<a href="#">About</a>
-				<a href="#">Services</a>
-				<a href="#">Clients</a>
-				<a href="#">Contact</a>
+				<ul>
+					<li wk-repeat="getMenuItems()">
+						<strong>${name}</strong>
+					</li>
+				</ul>
 			</div>
 		</div>
 		<div wk-id="mySidenavBtn" wk-click="toggleMenu" class="sidenavbtn">open</div>
@@ -21,6 +22,15 @@
 	console.log(this.parent);
 
 	var isOpen = false;
+
+	this.getMenuItems = function() {
+		return [{name : "Overview"}, {name: "Components"}, {name: "Events"},
+			{name : "Lists"}, {name : "Forms"}];
+	}
+
+	this.setOnChangeListener = function(listener) {
+		this.changeListener = listener;
+	}
 
 	this.toggleMenu = function() {
 		isOpen ? this.closeMenu() : this.openMenu();

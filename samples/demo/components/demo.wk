@@ -9,5 +9,12 @@
 		import DemoMenu from "./demomenu.wk";
 	</imports>
 	<script>
+		var scope = this;
+
+		this.onPostCreate = function() {
+			this.demoMenu.setOnChangeListener(function(menuItem) {
+				alert(menuItem);
+			});
+		}
 	</script>
 </component>

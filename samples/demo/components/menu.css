@@ -13,7 +13,7 @@
 }
 
 /* The navigation menu links */
-.sidenav a {
+.sidenav li {
     padding: 8px 8px 8px 32px;
     text-decoration: none;
     font-size: 25px;
@@ -23,7 +23,7 @@
 }
 
 /* When you mouse over the navigation links, change their color */
-.sidenav a:hover {
+.sidenav li:hover {
     color: #f1f1f1;
 }
 

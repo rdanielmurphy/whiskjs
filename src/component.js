@@ -9,6 +9,8 @@ function Component(params) {
     for (var key in params) {
         this[key] = params;
     }
+
+    this.repeats = {};
 }
 
 Component.prototype  = Object.create(Stateable.prototype);
@@ -25,15 +27,21 @@ Component.prototype.render = function() {
     this.rootNode.innerHTML = this.getTemplate();
 
     // Iterate over all children of component
-    var children = this._getChildren();
-    for (var i = 0; i < children.length; i++) {
-      var child = children[i];
-      this._processAttrs(child);
+    function iterate(scope, children) {
+        if (!children) {
+            return;
+        }
+
+        for (var i = 0; i < children.length; i++) {
+            var child = children[i];
+
+            if (scope._processChild(child)) {
+                iterate(scope, child.children);
+            }
+        }
     }
-    for (var i = 0; i < children.length; i++) {
-      var child = children[i];
-      this._processTag(child);
-    }
+
+    iterate(this, this.rootNode.children);
 
     if (this.onRender) {
         this.onRender();
@@ -51,14 +59,6 @@ Component.prototype.placeAt = function(placeAt) {
         var placeAt = document.getElementById(placeAt);
     }
     placeAt.appendChild(this.rootNode);
-}
-
-Component.prototype._getChildren = function() {
-    if (this.rootNode) {
-        return this.rootNode.getElementsByTagName('*');
-    }
-
-    return [];
 }
 
 Component.prototype._processAttrs = function(el) {
@@ -87,14 +87,42 @@ Component.prototype._processAttrs = function(el) {
             scope.setState(state);
         });
     }
+    var repeat = el.getAttribute("wk-repeat");
+    if (repeat) {
+        // TODO: build parent div and assign id to it for the update
+        repeat = "this." + repeat + "";
+        var repeatInner = el.innerHTML;
+        var repeatCopy = el.cloneNode(true);
+        Util.genRandId(repeatCopy);
+        this.repeats[repeatCopy.id] = repeatCopy;
+
+        var iterator = Util.replaceAllStateVars(repeat, this, true);
+        for (let i of iterator) {
+            var innerVal = Util.replaceAllStateVars(repeatInner, i);
+            var newEl = Util.createElement(el.tagName);
+            newEl.innerHTML = innerVal;
+            el.parentElement.appendChild(newEl);
+        }
+
+        el.remove();
+    }
 }
 
+// Return false if tag is a child component so we don't continue down DOM tree
 Component.prototype._processTag = function(el) {
     var tagName = el.tagName;
 
     if (Registry.getComponent(tagName)) {
         var tagClass = Registry.getComponent(tagName);
-        whisk.mount(new tagClass(), el);
+        var comp = new tagClass();
+        whisk.mount(comp, el);
+
+        var id = el.getAttribute("wk-id");
+        if (id) {
+            this[id] = comp;
+        }
+
+        return false;
     } else {
         // TODO the rest
         // TODO we can do stuff with lists
@@ -102,11 +130,13 @@ Component.prototype._processTag = function(el) {
             console.log("ul");
         }
     }
+
+    return el.children.length > 0;
 }
 
 Component.prototype._setTagState = function(el) {
     // TODO: Don't set state for child component tags
-    
+
     var wkValue = el.getAttribute("wk-value");
     if (wkValue) {
         var stringVal = Util.replaceAllStateVars(wkValue, this);
@@ -129,14 +159,28 @@ Component.prototype._setTagState = function(el) {
     }
 }
 
+Component.prototype._processChild = function(child) {
+    this._processAttrs(child);
+    return this._processTag(child);
+}
+
 Component.prototype.setState = function(state) {
     Object.getPrototypeOf(Component.prototype).setState.call(this, state);
 
-    var children = this._getChildren();
-    for (var i = 0; i < children.length; i++) {
-      var child = children[i];
-      this._setTagState(child);
+    function iterate(scope, children) {
+        for (var i = 0; i < children.length; i++) {
+            var child = children[i];
+            if (!Registry.getComponent(child.tagName)) {
+                scope._setTagState(child);
+
+                if (child.children.length > 0) {
+                    iterate(scope, child.children);
+                }
+            }
+        }
     }
+
+    iterate(this, this.rootNode.children);
 }
 
 export default Component;
