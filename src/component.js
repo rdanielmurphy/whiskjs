@@ -89,12 +89,12 @@ Component.prototype._processAttrs = function(el) {
     }
     var repeat = el.getAttribute("wk-repeat");
     if (repeat) {
-        // TODO: build parent div and assign id to it for the update
         repeat = "this." + repeat + "";
         var repeatInner = el.innerHTML;
         var repeatCopy = el.cloneNode(true);
         Util.genRandId(repeatCopy);
         this.repeats[repeatCopy.id] = repeatCopy;
+        el.parentElement.setAttribute("wk-repeat-id", repeatCopy.id);
 
         var iterator = Util.replaceAllStateVars(repeat, this, true);
         for (let i of iterator) {
@@ -137,6 +137,7 @@ Component.prototype._processTag = function(el) {
 Component.prototype._setTagState = function(el) {
     // TODO: Don't set state for child component tags
 
+    // handle value
     var wkValue = el.getAttribute("wk-value");
     if (wkValue) {
         var stringVal = Util.replaceAllStateVars(wkValue, this);
@@ -156,6 +157,12 @@ Component.prototype._setTagState = function(el) {
         if (el.tagName === 'INPUT') {
             el.value = stringVal;
         }
+    }
+
+    // handle list
+    var wkRepeat = el.getAttribute("wk-repeat-id");
+    if (wkRepeat) {
+        // TODO
     }
 }
 
