@@ -8,11 +8,12 @@ Features so far:
   - Component mounting
   - Data-binding
 
-Features to add:
+Features working on:
   - Routing
   - Embedded components
   - List logic
   - Class logic
   - If logic
-  
+  - Animations  
+
   etc...
